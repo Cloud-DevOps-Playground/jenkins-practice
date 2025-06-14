@@ -1,0 +1,31 @@
+# docker-compose.yaml
+name: jenkins-deployment
+
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    environment:
+      - JENKINS_HOME=/var/jenkins_home
+    expose:
+      - 8080
+      - 50000
+    # privileged: true
+    ports:
+      - 8080:8080
+      - 50000:50000
+    restart: on-failure
+    # user: root
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+      # - /var/run/docker.sock:/var/run/docker.sock
+  agent:
+    container_name: agent
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCtgNCt8sQbpGbeyLWgnikmcSVnUpQEj6oW8q+V9UGVlxfmC6QewJLKGemT+QmsWC/BkO8lGfXptAkZv3+/C+L2vjuwCeRmfUeWej0oYM5JCsYLqmRbkNyzyoZdZro0FfremNiFiafj5rAG+at8gisgurePcj0VolvZ5VZfN2Qp8qvMwtRaPJVcMWRVsGv7iGJc4yobh/K2dVXbD7cw1hoEGP81vIVqBon8zLBV8rvwjuY9EsmWnkLw0lmtb8QilSOMK7j3iauPTOauyOQdaHy9vE9KsFD1DyvYLeSfA+vQQGPwDshqTKwhY2hGLR+Vp7QS2ezATrXdrhyHCfTlhyku3AXQAlO4j/p9IWwZlgDmbE6i0ofzacdA3+dmwO/CXfDRZHeRwGBQQOQqgCFRbrjAb+7dRPjD33UVufbo/1TZxhkjmm8JTj1zQvaBmbLJNziHibNxuNVMCGklE+gXYYLQ/xcS8t+6eHhSOky9FTTxFSga542J4n7cALPvX/i8PUc=
+    expose:
+      - 22
+    image: jenkins/ssh-agent:latest
+    # privileged: true
+    restart: on-failure
+    # user: root
